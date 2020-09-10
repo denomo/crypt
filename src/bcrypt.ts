@@ -359,9 +359,31 @@ function streamToWord(data: number[], state: any): number {
   let word: number = 0;
   let off: number = state.offp;
   for (i = 0; i < 4; i++) {
-      word = (word << 8) | (data[off] & 0xff);
-      off = (off + 1) % data.length;
+    word = (word << 8) | (data[off] & 0xff);
+    off = (off + 1) % data.length;
   }
   state.offp = off;
   return word;
+};
+
+function key(key: number[], state: any) {
+  let i: number;
+  state.offp = 0;
+  let lr: number[] = new Array(0x00000000, 0x00000000);
+  let plen: number = state.P.length;
+  let slen: number = state.S.length;
+  for (i = 0; i < plen; i++) {
+    state.P[i] = state.P[i] ^ streamToWord(key, state);
+  }
+  for (i = 0; i < plen; i += 2) {
+    encipher(lr, 0, state);
+    state.P[i] = lr[0];
+    state.P[i + 1] = lr[1];
+  }
+  for (i = 0; i < slen; i += 2) {
+    encipher(lr, 0, state);
+    state.S[i] = lr[0];
+    state.S[i + 1] = lr[1];
+  }
+  return state
 };
