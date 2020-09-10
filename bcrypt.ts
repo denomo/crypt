@@ -230,3 +230,18 @@ let INDEX_64 = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
   32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48,
   49, 50, 51, 52, 53, -1, -1, -1, -1, -1
 ];
+
+function getByte(c: string): any {
+  let ret: number = 0;
+  let b: number;
+  try {
+    b = c.charCodeAt(0);
+  } catch (err) {
+    b = +c; // parseInt/parseFloat
+  }
+  if (b > 127) {
+    return -128 + (b % 128);
+  } else {
+    return b;
+  }
+};
