@@ -245,3 +245,34 @@ function getByte(c: string): any {
     return b;
   }
 };
+
+function encodeBase64(d: any, len: number): string {
+  let off:number = 0;
+  let rs: string[] = [];
+  let c1: number;
+  let c2: number;
+  if (len <= 0 || len > d.length)
+    throw "Invalid len";
+  while (off < len) {
+    c1 = d[off++] & 0xff;
+    rs.push(BASE64_CODE[(c1 >> 2) & 0x3f]);
+    c1 = (c1 & 0x03) << 4;
+    if (off >= len) {
+      rs.push(BASE64_CODE[c1 & 0x3f]);
+      break;
+    }
+    c2 = d[off++] & 0xff;
+    c1 |= (c2 >> 4) & 0x0f;
+    rs.push(BASE64_CODE[c1 & 0x3f]);
+    c1 = (c2 & 0x0f) << 2;
+    if (off >= len) {
+      rs.push(BASE64_CODE[c1 & 0x3f]);
+      break;
+    }
+    c2 = d[off++] & 0xff;
+    c1 |= (c2 >> 6) & 0x03;
+    rs.push(BASE64_CODE[c1 & 0x3f]);
+    rs.push(BASE64_CODE[c2 & 0x3f]);
+  }
+  return rs.join('');
+};
