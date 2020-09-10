@@ -276,3 +276,11 @@ function encodeBase64(d: any, len: number): string {
   }
   return rs.join('');
 };
+
+function char64(x): any {
+  let code: number = x.charCodeAt(0);
+  if (code < 0 || code > INDEX_64.length) {
+    return -1;
+  }
+  return INDEX_64[code];
+};
