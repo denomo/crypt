@@ -277,7 +277,7 @@ function encodeBase64(d: any, len: number): string {
   return rs.join('');
 };
 
-function char64(x): number {
+function char64(x: string): number {
   let code: number = x.charCodeAt(0);
   if (code < 0 || code > INDEX_64.length) {
     return -1;
@@ -326,4 +326,30 @@ function decodeBase64(s: string, maxolen: number): number[] {
     ret.push(getByte(rs[off]));
   }
   return ret;
+};
+
+function encipher(lr: number[], off: number, state: any): number {
+  let i;
+  let n;
+  let l: number = lr[off];
+  let r: number = lr[off + 1];
+  l ^= state.P[0];
+  for (i = 0; i <= BLOWFISH_NUM_ROUNDS - 2;) {
+    // Feistel substitution on left word
+    n = state.S[(l >> 24) & 0xff];
+    n += state.S[0x100 | ((l >> 16) & 0xff)];
+    n ^= state.S[0x200 | ((l >> 8) & 0xff)];
+    n += state.S[0x300 | (l & 0xff)];
+    r ^= n ^ state.P[++i];
+
+    // Feistel substitution on right word
+    n = state.S[(r >> 24) & 0xff];
+    n += state.S[0x100 | ((r >> 16) & 0xff)];
+    n ^= state.S[0x200 | ((r >> 8) & 0xff)];
+    n += state.S[0x300 | (r & 0xff)];
+    l ^= n ^ state.P[++i];
+  }
+  lr[off] = r ^ state.P[BLOWFISH_NUM_ROUNDS + 1];
+  lr[off + 1] = l;
+  return state
 };
