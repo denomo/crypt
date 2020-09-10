@@ -353,3 +353,15 @@ function encipher(lr: number[], off: number, state: any): number {
   lr[off + 1] = l;
   return state
 };
+
+function streamToWord(data: number[], state: any): number {
+  let i: number;
+  let word: number = 0;
+  let off: number = state.offp;
+  for (i = 0; i < 4; i++) {
+      word = (word << 8) | (data[off] & 0xff);
+      off = (off + 1) % data.length;
+  }
+  state.offp = off;
+  return word;
+};
