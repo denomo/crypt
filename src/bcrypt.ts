@@ -366,7 +366,7 @@ function streamToWord(data: number[], state: any): number {
   return word;
 };
 
-function key(key: number[], state: any) {
+function key(key: number[], state: any): any {
   let i: number;
   state.offp = 0;
   let lr: number[] = new Array(0x00000000, 0x00000000);
@@ -381,6 +381,33 @@ function key(key: number[], state: any) {
     state.P[i + 1] = lr[1];
   }
   for (i = 0; i < slen; i += 2) {
+    encipher(lr, 0, state);
+    state.S[i] = lr[0];
+    state.S[i + 1] = lr[1];
+  }
+  return state
+};
+
+function ekskey(data: number[], key: number[], state: any): any {
+  let i: number;
+  state.offp = 0;
+  let lr: number[] = new Array(0x00000000, 0x00000000);
+  let plen: number = state.P.length;
+  let slen: number = state.S.length;
+  for (i = 0; i < plen; i++) {
+    state.P[i] = state.P[i] ^ streamToWord(key, state);
+  }
+  state.offp = 0;
+  for (i = 0; i < plen; i += 2) {
+    lr[0] ^= streamToWord(data, state);
+    lr[1] ^= streamToWord(data, state);
+    encipher(lr, 0, state);
+    state.P[i] = lr[0];
+    state.P[i + 1] = lr[1];
+  }
+  for (i = 0; i < slen; i += 2) {
+    lr[0] ^= streamToWord(data, state);
+    lr[1] ^= streamToWord(data, state);
     encipher(lr, 0, state);
     state.S[i] = lr[0];
     state.S[i + 1] = lr[1];
