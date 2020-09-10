@@ -231,7 +231,7 @@ let INDEX_64 = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
   49, 50, 51, 52, 53, -1, -1, -1, -1, -1
 ];
 
-function getByte(c: string): any {
+function getByte(c: any): any {
   let ret: number = 0;
   let b: number;
   try {
@@ -277,10 +277,53 @@ function encodeBase64(d: any, len: number): string {
   return rs.join('');
 };
 
-function char64(x): any {
+function char64(x): number {
   let code: number = x.charCodeAt(0);
   if (code < 0 || code > INDEX_64.length) {
     return -1;
   }
   return INDEX_64[code];
+};
+
+function decodeBase64(s: string, maxolen: number): number[] {
+  let off: number = 0;
+  let slen: number = s.length;
+  let olen: number = 0;
+  let rs: string[] = [];
+  let c1, c2, c3, c4, o;
+  if (maxolen <= 0)
+    throw "Invalid maxolen";
+  while (off < slen - 1 && olen < maxolen) {
+    c1 = char64(s.charAt(off++));
+    c2 = char64(s.charAt(off++));
+    if (c1 == -1 || c2 == -1) {
+      break;
+    }
+    o = getByte(c1 << 2);
+    o |= (c2 & 0x30) >> 4;
+    rs.push(String.fromCharCode(o));
+    if (++olen >= maxolen || off >= slen) {
+      break;
+    }
+    c3 = char64(s.charAt(off++));
+    if (c3 == -1) {
+      break;
+    }
+    o = getByte((c2 & 0x0f) << 4);
+    o |= (c3 & 0x3c) >> 2;
+    rs.push(String.fromCharCode(o));
+    if (++olen >= maxolen || off >= slen) {
+      break;
+    }
+    c4 = char64(s.charAt(off++));
+    o = getByte((c3 & 0x03) << 6);
+    o |= c4;
+    rs.push(String.fromCharCode(o));
+    ++olen;
+  }
+  let ret = [];
+  for (off = 0; off < olen; off++) {
+    ret.push(getByte(rs[off]));
+  }
+  return ret;
 };
