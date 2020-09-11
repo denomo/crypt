@@ -1,5 +1,7 @@
 // Designed by Niels Provos and David Mazières
 
+import { encode } from '../../deps';
+import * as base64 from './base64.ts';
 // BCrypt parameters
 const GENSALT_DEFAULT_LOG2_ROUNDS = 10;
 let BCRYPT_SALT_LEN = 16;
@@ -1201,4 +1203,23 @@ function cryptRaw(
     ret[j++] = cdata[i] & 0xff;
   }
   return ret;
+}
+
+export function genSalt(
+  log_rounds: number = GENSALT_DEFAULT_LOG2_ROUNDS,
+): string {
+  let rs: string[] = [];
+  let rnd = new Uint8Array(BCRYPT_SALT_LEN);
+  crypto.getRandomValues(rnd);
+  rs.push('$2a$');
+  if (log_rounds < 10) {
+    rs.push('0');
+  }
+  if (log_rounds > 30) {
+    throw new Error('log_rounds exceeds maximum (30)');
+  }
+  rs.push(log_rounds.toString());
+  rs.push('$');
+  rs.push(base64.encode(rnd, rnd.length));
+  return rs.join('');
 }
