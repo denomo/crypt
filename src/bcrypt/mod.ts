@@ -1223,3 +1223,77 @@ export function genSalt(
   rs.push(base64.encode(rnd, rnd.length));
   return rs.join('');
 }
+
+export function hashPw(password: string, salt: string = genSalt()): string {
+  let real_salt: string;
+  let passwordb: Uint8Array;
+  let saltb: Uint8Array;
+  let hashed: Uint8Array;
+  let minor: string = "";
+  let rounds = 0;
+  let off = 0;
+  let rs: string[] = [];
+
+  if (salt.charAt(0) !== '$' || salt.charAt(1) !== '2') {
+    throw new Error('Invalid salt version');
+  }
+  if (salt.charAt(2) === '$') {
+    off = 3;
+  } else {
+    minor = salt.charAt(2);
+    if (
+      (minor.charCodeAt(0) >= 'a'.charCodeAt(0) &&
+        minor.charCodeAt(0) >= 'z'.charCodeAt(0)) ||
+      salt.charAt(3) !== '$'
+    ) {
+      throw new Error('Invalid salt revision');
+    }
+    off = 4;
+  }
+
+  // Extract number of rounds
+  if (salt.charAt(off + 2) > '$') throw new Error('Missing salt rounds');
+  rounds = parseInt(salt.substring(off, off + 2));
+
+  real_salt = salt.substring(off + 3, off + 25);
+
+  passwordb = encode(
+    password + (minor.charCodeAt(0) >= 'a'.charCodeAt(0) ? '\u0000' : ''),
+  );
+
+  saltb = base64.decode(real_salt, BCRYPT_SALT_LEN);
+
+  hashed = cryptRaw(passwordb, saltb, rounds, BF_CRYPT_CIPHERTEXT.slice());
+
+  rs.push('$2');
+  if (minor.charCodeAt(0) >= 'a'.charCodeAt(0)) rs.push(minor);
+  rs.push('$');
+  if (rounds < 10) rs.push('0');
+  if (rounds > 30) {
+    throw new Error('rounds exceeds maximum (30)');
+  }
+  rs.push(rounds.toString());
+  rs.push('$');
+  rs.push(base64.encode(saltb, saltb.length));
+  rs.push(base64.encode(hashed, BF_CRYPT_CIPHERTEXT.length * 4 - 1));
+  return rs.join('');
+}
+
+export function checkPw(plaintext: string, hashed: string): boolean {
+  let hashed_bytes: Uint8Array;
+  let try_bytes: Uint8Array;
+
+  let try_pw = hashPw(plaintext, hashed);
+  hashed_bytes = encode(hashed);
+  try_bytes = encode(try_pw);
+
+  if (hashed_bytes.length !== try_bytes.length) {
+    return false;
+  }
+
+  let ret = 0;
+  for (let i = 0; i < try_bytes.length; i++) {
+    ret |= hashed_bytes[i] ^ try_bytes[i];
+  }
+  return ret === 0;
+}
