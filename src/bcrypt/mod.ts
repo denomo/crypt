@@ -1,6 +1,6 @@
 // Designed by Niels Provos and David Mazières
 
-import { encode } from '../../deps';
+import { encode } from '../../deps.ts';
 import * as base64 from './base64.ts';
 // BCrypt parameters
 const GENSALT_DEFAULT_LOG2_ROUNDS = 10;
