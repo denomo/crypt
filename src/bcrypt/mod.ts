@@ -113,3 +113,37 @@ export async function genSalt(
     };
   });
 }
+
+/**
+ * It is used to generate a hash for the plaintext password
+ * Requires --allow-net and --unstable flags
+ *
+ * @export
+ * @param {string} plaintext The password to hash
+ * @param {(string | undefined)} [salt=undefined] The salt to use when hashing. Recommended to leave this undefined.
+ * @returns {Promise<string>} The hashed password
+ */
+export async function hash(
+  plaintext: string,
+  salt: string | undefined = undefined,
+): Promise<string> {
+  let worker = new Worker(
+    new URL('worker.ts', import.meta.url).toString(),
+    { type: 'module', deno: true },
+  );
+
+  worker.postMessage({
+    action: 'hash',
+    payload: {
+      plaintext,
+      salt,
+    },
+  });
+
+  return new Promise((resolve) => {
+    worker.onmessage = (event) => {
+      resolve(event.data);
+      worker.terminate();
+    };
+  });
+}
