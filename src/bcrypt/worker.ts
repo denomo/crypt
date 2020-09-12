@@ -15,5 +15,15 @@ context.onmessage = (event) => {
       context.postMessage(bcrypt.genSalt(data.payload.log_rounds));
       break;
     }
+    case 'compare': {
+      let result: boolean;
+      try {
+        result = bcrypt.checkPw(data.payload.plaintext, data.payload.hash);
+      } catch {
+        result = false;
+      }
+      context.postMessage(result);
+      break;
+    }
   }
 };
