@@ -2,7 +2,7 @@
   ⭐️ Please support us by giving a star! Thanks! ⭐️
 </p>
 
-# Crypt 🔑 
+# 🔑 Crypt
 
 Crypt is a standard Deno module that it is used to compute the hash of user account passwords.
 
