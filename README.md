@@ -6,6 +6,8 @@
 
 Crypt is a standard Deno module that it is used to compute the hash of user account passwords.
 
+<!-- BCrypt, SCrypt, PBKDF2, SHA1, SHA256, SHA384, SHA512. -->
+
 ## 🎁 Features
 
 * [ ] BCrypt
