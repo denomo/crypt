@@ -4,7 +4,7 @@
 
 # 🔑 Crypt
 
-Crypt is a standard Deno module that it is used to compute the hash of user account passwords.
+Crypt is a standard Deno module that it is used to compute the hash of passwords.
 
 <!-- BCrypt, SCrypt, PBKDF2, SHA1, SHA256, SHA384, SHA512. -->
 
@@ -18,7 +18,7 @@ Crypt is a standard Deno module that it is used to compute the hash of user acco
 ### 🔧 How to use
 
 ```js
-import * as bcrypt from 'https://deno.land/x/crypt/bcrypt.ts';
+import * as bcrypt from 'https://deno.land/x/crypt@v0.1.0/bcrypt.ts';
 ```
 
 ### 💡 Usage
