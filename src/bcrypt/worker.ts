@@ -11,5 +11,9 @@ context.onmessage = (event) => {
       );
       break;
     }
+    case 'genSalt': {
+      context.postMessage(bcrypt.genSalt(data.payload.log_rounds));
+      break;
+    }
   }
 };
