@@ -33,3 +33,18 @@ export function genSaltSync(
 ): string {
   return bcrypt.genSalt(log_rounds);
 }
+
+/**
+ * It is used to generate a hash for the plaintext password
+ *
+ * @export
+ * @param {string} plaintext The password to hash
+ * @param {(string | undefined)} [salt=undefined] The salt to use when hashing. Recommended to leave this undefined.
+ * @returns {string} The hashed password
+ */
+export function hashSync(
+  plaintext: string,
+  salt: string | undefined = undefined,
+): string {
+  return bcrypt.hashPw(plaintext, salt);
+}
