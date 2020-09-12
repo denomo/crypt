@@ -20,3 +20,16 @@ export function compareSync(plaintext: string, hash: string): boolean {
     return false;
   }
 }
+
+/**
+ * It is used to generates a salt using a number of log rounds
+ *
+ * @export
+ * @param {(number | undefined)} [log_rounds=undefined] Number of log rounds to use. Recommended to leave this undefined.
+ * @returns {string} The generated salt
+ */
+export function genSaltSync(
+  log_rounds: number | undefined = undefined,
+): string {
+  return bcrypt.genSalt(log_rounds);
+}

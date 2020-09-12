@@ -37,3 +37,5 @@ How to contribute:
 ## ⚖️ License
 
 The MIT License [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+<!-- deno run --unstable --allow-net --allow-read bcrypt.ts -->
