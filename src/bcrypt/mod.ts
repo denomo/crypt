@@ -1,15 +1,12 @@
-// Designed by Niels Provos and David Mazières
-
 import { encode } from '../../deps.ts';
 import * as base64 from './base64.ts';
+
 // BCrypt parameters
 const GENSALT_DEFAULT_LOG2_ROUNDS = 10;
-let BCRYPT_SALT_LEN = 16;
+const BCRYPT_SALT_LEN = 16;
 
 // Blowfish parameters
-let BLOWFISH_NUM_ROUNDS = 16;
-
-let MAX_EXECUTION_TIME = 100;
+const BLOWFISH_NUM_ROUNDS = 16;
 
 const P_ORIG = new Int32Array([
   0x243f6a88,
@@ -1104,10 +1101,12 @@ function encipher(lr: Int32Array, off: number): void {
 function streamToWord(data: Uint8Array, offp: Int32Array): number {
   let word = 0;
   let off = offp[0];
+
   for (let i = 0; i < 4; i++) {
     word = (word << 8) | (data[off] & 0xff);
     off = (off + 1) % data.length;
   }
+
   offp[0] = off;
   return word;
 };
@@ -1179,10 +1178,10 @@ function cryptRaw(
   let ret: Uint8Array;
 
   if (log_rounds < 4 || log_rounds > 30) {
-    throw new Error("Bad number of rounds");
+    throw new Error('Bad number of rounds');
   }
   rounds = 1 << log_rounds;
-  if (salt.length !== BCRYPT_SALT_LEN) throw new Error("Bad salt length");
+  if (salt.length !== BCRYPT_SALT_LEN) throw new Error('Bad salt length');
 
   initKey();
   ekskey(salt, password);
@@ -1229,7 +1228,7 @@ export function hashPw(password: string, salt: string = genSalt()): string {
   let passwordb: Uint8Array;
   let saltb: Uint8Array;
   let hashed: Uint8Array;
-  let minor: string = "";
+  let minor: string = '';
   let rounds = 0;
   let off = 0;
   let rs: string[] = [];
