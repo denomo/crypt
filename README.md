@@ -11,6 +11,10 @@ Crypt is a standard Deno module that it is used to compute the hash of user acco
 * [ ] BCrypt
 * [ ] SCrypt
 
+## 📜 Changelog
+
+Details changes for each release are documented in the [CHANGELOG.md](https://github.com/Bunlong/crypt/blob/master/CHANGELOG.md).
+
 ## ❗ Issues
 
 If you think any of the `Crypt` can be improved, please do open a PR with any updates and submit any issues. Also, I will continue to improve this, so you might want to watch/star this repository to revisit.
