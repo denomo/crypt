@@ -63,15 +63,46 @@ export async function compare(
   hash: string,
 ): Promise<boolean> {
   let worker = new Worker(
-    new URL("worker.ts", import.meta.url).toString(),
-    { type: "module", deno: true },
+    new URL('worker.ts', import.meta.url).toString(),
+    { type: 'module', deno: true },
   );
 
   worker.postMessage({
-    action: "compare",
+    action: 'compare',
     payload: {
       plaintext,
       hash,
+    },
+  });
+
+  return new Promise((resolve) => {
+    worker.onmessage = (event) => {
+      resolve(event.data);
+      worker.terminate();
+    };
+  });
+}
+
+/**
+ * It is used to generates a salt using a number of log rounds
+ * Requires --allow-net and --unstable flags
+ *
+ * @export
+ * @param {(number | undefined)} [log_rounds=undefined] Number of log rounds to use. Recommended to leave this undefined.
+ * @returns {Promise<string>} The generated salt
+ */
+export async function genSalt(
+  log_rounds: number | undefined = undefined,
+): Promise<string> {
+  let worker = new Worker(
+    new URL('worker.ts', import.meta.url).toString(),
+    { type: 'module', deno: true },
+  );
+
+  worker.postMessage({
+    action: "genSalt",
+    payload: {
+      log_rounds,
     },
   });
 
