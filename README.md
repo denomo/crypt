@@ -13,6 +13,37 @@ Crypt is a standard Deno module that it is used to compute the hash of user acco
 * [ ] BCrypt
 * [ ] SCrypt
 
+## 🎀 BCrypt
+
+### 🔧 How to use
+
+```js
+import * as bcrypt from 'https://deno.land/x/crypt/bcrypt.ts';
+```
+
+### 💡 Usage
+
+#### 🔛 Sync
+
+To hash a password (with auto-generated salt):
+
+```js
+const hash = bcrypt.hash('Crypt');
+```
+
+To check a password:
+
+```js
+const result = bcrypt.compare('Crypt', hash);
+```
+
+To hash a password with a manually generated salt:
+
+```js
+const salt = bcrypt.genSaltSync(8);
+const hash = bcrypt.hashSync("Crypt", salt);
+```
+
 ## 📜 Changelog
 
 Details changes for each release are documented in the [CHANGELOG.md](https://github.com/Bunlong/crypt/blob/master/CHANGELOG.md).

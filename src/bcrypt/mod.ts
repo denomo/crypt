@@ -1,8 +1,8 @@
 import * as bcrypt from './bcrypt.ts';
 
 // **
-// * Using the async variant is highly recommended.
-// * This function is blocking and computationally expensive but requires no additonal flags.
+// * Using the async variant is highly recommended
+// * This function is blocking and computationally expensive but not requires additonal flags
 // *
 
 /**
@@ -47,4 +47,38 @@ export function hashSync(
   salt: string | undefined = undefined,
 ): string {
   return bcrypt.hashPw(plaintext, salt);
+}
+
+/**
+ * It is used to check if a plaintext password matches a hash
+ * Requires --allow-net and --unstable flags
+ *
+ * @export
+ * @param {string} plaintext The plaintext password to check
+ * @param {string} hash The hash to compare to
+ * @returns {Promise<boolean>} Whether the password matches the hash
+ */
+export async function compare(
+  plaintext: string,
+  hash: string,
+): Promise<boolean> {
+  let worker = new Worker(
+    new URL("worker.ts", import.meta.url).toString(),
+    { type: "module", deno: true },
+  );
+
+  worker.postMessage({
+    action: "compare",
+    payload: {
+      plaintext,
+      hash,
+    },
+  });
+
+  return new Promise((resolve) => {
+    worker.onmessage = (event) => {
+      resolve(event.data);
+      worker.terminate();
+    };
+  });
 }
