@@ -25,5 +25,8 @@ context.onmessage = (event) => {
       context.postMessage(result);
       break;
     }
+    default: {
+      throw Error('Invalid data sent to worker');
+    }
   }
 };
