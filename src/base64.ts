@@ -196,7 +196,7 @@ const INDEX_64 = new Int8Array([
   -1,
 ]);
 
-function encode(d: Uint8Array, len: number): string {
+export function encode(d: Uint8Array, len: number): string {
   let off: number = 0;
   let rs: string[] = [];
   let c1: number = 0;

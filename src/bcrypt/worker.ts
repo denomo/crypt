@@ -1,4 +1,4 @@
-import * as bcrypt from './mod.ts';
+import * as bcrypt from './bcrypt.ts';
 
 const context: Worker = self as any;
 
